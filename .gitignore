@@ -1,0 +1,6 @@
+/target/
+/logs/
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+/Parse Reference/
+/MyMHS API.iml

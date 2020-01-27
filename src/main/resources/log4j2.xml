@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="30">
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout>
+        <Pattern>[%d{HH:mm:ss.SSS}] [%level] %msg%n</Pattern>
+      </PatternLayout>
+    </Console>
+
+    <RollingFile append="false" fileName="logs/app.log"
+      filePattern="logs/app.%d{MM-dd-yyyy-HH-mm}.log"
+      ignoreExceptions="false"
+      name="Log">
+      <DefaultRolloverStrategy max="10"/>
+      <PatternLayout>
+        <Pattern>[%d{HH:mm:ss.SSS}] [%level] %msg%n</Pattern>
+      </PatternLayout>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="1 MB"/>
+      </Policies>
+    </RollingFile>
+  </Appenders>
+
+  <Loggers>
+    <Root level="info">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="Log"/>
+    </Root>
+  </Loggers>
+</Configuration>
