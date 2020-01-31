@@ -8,11 +8,12 @@ import lombok.SneakyThrows;
  */
 public class GenesisURL {
 
-  public static String BASE = "https://parents.mtsd.k12.nj.us/genesis/";
+  public static final String BASE = "https://parents.mtsd.k12.nj.us/genesis/";
 
   @SneakyThrows
   public static URL get(Path path, String... options) {
-    return new URL(String.format(BASE + path.getValue(), options));
+    // noinspection RedundantCast (IntelliJ conflicting "redudant cast"" and "confusing arg to varargs" warnings)
+    return new URL(String.format(BASE + path.getValue(), (Object[]) options));
   }
 
   public enum Path {

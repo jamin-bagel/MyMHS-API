@@ -5,7 +5,8 @@ package me.jaminbagel.mymhs.api;
  */
 public enum Message {
   LOGIN_SUCCESS("Successfully logged into Genesis"),
-  LOGIN_INVALID_CREDENTIALS("Incorrect username or password");
+  LOGIN_INVALID_CREDENTIALS("Incorrect username or password"),
+  LOGIN_BAD_SESSION_ID("Invalid session ID");
 
   private final String text;
 

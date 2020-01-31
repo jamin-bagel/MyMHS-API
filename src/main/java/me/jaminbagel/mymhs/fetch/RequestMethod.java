@@ -5,6 +5,5 @@ package me.jaminbagel.mymhs.fetch;
  */
 public enum RequestMethod {
   GET,
-  POST,
-  DELETE
+  POST
 }

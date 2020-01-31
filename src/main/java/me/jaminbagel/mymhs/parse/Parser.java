@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document;
  */
 public abstract class Parser {
 
-  private Document dom;
+  private final Document dom;
 
   public Parser(String html) throws LoggedOutException {
     this.dom = Jsoup.parse(html.replaceAll("\\s{2,}", ""));

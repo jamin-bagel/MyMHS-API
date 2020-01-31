@@ -14,7 +14,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Response {
 
-  private static Logger logger = LogManager.getLogger("GLOBAL");
+  private static final Logger logger = LogManager.getLogger("GLOBAL");
 
   @Getter
   int code;

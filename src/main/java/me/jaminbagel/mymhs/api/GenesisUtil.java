@@ -1,4 +1,4 @@
-package me.jaminbagel.mymhs.fetch;
+package me.jaminbagel.mymhs.api;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -8,21 +8,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.SneakyThrows;
 import me.jaminbagel.mymhs.exception.InvalidServerResponseException;
+import me.jaminbagel.mymhs.fetch.GenesisURL;
 import me.jaminbagel.mymhs.fetch.GenesisURL.Path;
 import me.jaminbagel.mymhs.fetch.Request.Builder;
+import me.jaminbagel.mymhs.fetch.RequestMethod;
+import me.jaminbagel.mymhs.fetch.Response;
 
 /**
  * Created by Ben on 1/12/20 @ 9:42 PM
  */
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class GenesisUtil {
 
   // Gets only the value of the session ID from a Set-Cookie header
-  private static Pattern SESSION_ID_COOKIE_PATTERN = Pattern
+  private static final Pattern SESSION_ID_COOKIE_PATTERN = Pattern
       .compile("JSESSIONID=([A-Z0-9]{32})($|;)");
-  // For validating session IDs sent as a parameter
-  private static Pattern SESSION_ID_PATTERN = Pattern.compile("^[A-Z0-9]{32}$");
-  // For getting the student's ID from URL parameters
-  private static Pattern STUDENT_ID_PARAM_PATTERN = Pattern.compile("[?&]studentid=([0-9]+)(&|$)");
+  // For getting the student's ID from URL a Genesis location header
+  private static final Pattern STUDENT_ID_PARAM_PATTERN = Pattern
+      .compile("[?&]studentid=([0-9]+)(&|$)");
+
+  // For validating session IDs sent to our server as parameters
+  private static final Pattern SESSION_ID_PATTERN = Pattern.compile("^[A-Z0-9]{32}$");
+  // For validating student IDs sent to our server as parameters
+  private static final Pattern STUDENT_ID_PATTERN = Pattern.compile("^\\d{1,15}$");
 
 
   /**
@@ -72,8 +80,8 @@ public class GenesisUtil {
       throws IOException, InvalidServerResponseException {
     // Verify that Session ID, Username and Password are all present and valid
     if (!validateSessionId(sessionId)
-        && !validateUsernameOrPassword(user)
-        && !validateUsernameOrPassword(password)) {
+        || !validateUsernameOrPassword(user)
+        || !validateUsernameOrPassword(password)) {
       return false;
     }
 
@@ -94,8 +102,8 @@ public class GenesisUtil {
       return authResponse.getHeader("location").contains("/genesis/parents?");
     } catch (MalformedURLException e) {
       e.printStackTrace();
-      return false;
     }
+    return false;
   }
 
   /**
@@ -107,7 +115,7 @@ public class GenesisUtil {
    */
   public static String getSessionStudentId(String sessionId) throws IOException {
     // Verify that session ID is valid
-    if (!validateSessionId(sessionId)) {
+    if (validateSessionId(sessionId)) {
       return null;
     }
 
@@ -149,16 +157,26 @@ public class GenesisUtil {
    * @return Whether or not the username/password is safe to send to Genesis
    */
   public static boolean validateUsernameOrPassword(String authInput) {
-    return authInput != null && authInput.length() <= 100 && authInput.length() > 0;
+    return authInput != null && authInput.length() <= 320 && authInput.length() > 1;
   }
 
   /**
    * Ensure that a Genesis session ID (usually passed through URL parameter) is valid
    *
-   * @param sessionId Session ID to check against
+   * @param sessionId Session ID to check
    * @return Whether or not the session ID is properly formatted
    */
   public static boolean validateSessionId(String sessionId) {
     return sessionId != null && SESSION_ID_PATTERN.matcher(sessionId).find();
+  }
+
+  /**
+   * Ensure that a student ID sent to this servlet (usually via URL parameter) is valid
+   *
+   * @param studentId Student ID to check
+   * @return Whether or not the student ID is properly formatted
+   */
+  public static boolean validateStudentId(String studentId) {
+    return studentId != null && STUDENT_ID_PATTERN.matcher(studentId).find();
   }
 }

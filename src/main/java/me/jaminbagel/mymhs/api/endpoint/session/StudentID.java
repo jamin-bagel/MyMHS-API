@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import me.jaminbagel.mymhs.api.APIUtil.ResponseType;
-import me.jaminbagel.mymhs.fetch.GenesisUtil;
+import me.jaminbagel.mymhs.api.GenesisUtil;
 import org.json.JSONObject;
 
 /**
@@ -15,6 +15,7 @@ import org.json.JSONObject;
  */
 public class StudentID extends HttpServlet {
 
+  // TODO: 1/31/20 Extent endpoint
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) {
     if (req.getMethod().equals("GET")) {

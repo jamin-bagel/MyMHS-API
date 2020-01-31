@@ -16,12 +16,12 @@ import org.perf4j.StopWatch;
  */
 public class Request {
 
-  private static Logger logger = LogManager.getLogger("GLOBAL");
+  private static final Logger logger = LogManager.getLogger("GLOBAL");
 
-  private URL url;
-  private RequestMethod method;
-  private ConcurrentHashMap<String, String> headers;
-  private String body;
+  private final URL url;
+  private final RequestMethod method;
+  private final ConcurrentHashMap<String, String> headers;
+  private final String body;
 
   private Request(Builder builder) {
     this.url = builder.url;

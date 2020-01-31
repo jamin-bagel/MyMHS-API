@@ -7,14 +7,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import me.jaminbagel.mymhs.api.APIUtil.ResponseType;
+import me.jaminbagel.mymhs.api.GenesisUtil;
 import me.jaminbagel.mymhs.exception.InvalidServerResponseException;
-import me.jaminbagel.mymhs.fetch.GenesisUtil;
 
 /**
  * Created by Ben on 12/26/19 @ 11:37 PM
  */
 public class SessionID extends HttpServlet {
 
+  // TODO: 1/31/20 Extent endpoint
   @Override
   protected void service(HttpServletRequest req, HttpServletResponse resp) {
     if (req.getMethod().equals("POST")) {
