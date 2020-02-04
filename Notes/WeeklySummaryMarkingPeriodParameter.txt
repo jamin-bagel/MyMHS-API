@@ -1,0 +1,6 @@
+These notes refer to usage of the value of the "mpToView" parameter on the Weekly Summary page
+
+- At MHS, S[1-2] are synonymous with MP[1-2] (MP[3-4] are invalid)
+- FG calculates per-course grade projection for us
+- FY only works when all marking periods/semesters are complete and grades are finalized
+- F[1-5] and Q[1-4] don't have grading periods attached; they can be ignored
