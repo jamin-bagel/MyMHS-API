@@ -21,6 +21,10 @@ import org.json.JSONObject;
  */
 public class Authenticate extends Endpoint {
 
+  private static ConcurrentHashMap<String, Pattern> requiredParams = new ConcurrentHashMap<String, Pattern>() {{
+    put(SESSION_ID_PARAM, GenesisUtil.SESSION_ID_PATTERN);
+  }};
+
   @Override
   public HttpMethod getAllowedMethod() {
     return HttpMethod.POST;
@@ -33,9 +37,7 @@ public class Authenticate extends Endpoint {
 
   @Override
   public ConcurrentHashMap<String, Pattern> getRequiredParameters() {
-    return new ConcurrentHashMap<String, Pattern>() {{
-      put(SESSION_ID_PARAM, GenesisUtil.SESSION_ID_PATTERN);
-    }};
+    return requiredParams;
   }
 
   @Override
