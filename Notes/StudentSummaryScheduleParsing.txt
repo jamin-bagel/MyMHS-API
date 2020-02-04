@@ -1,0 +1,6 @@
+These notes outline various complications when parsing/sorting the schedule table on the Student Summary Page
+
+- For whatever reason, at LMS, lunch and flex are included in the student summary; at MHS, they are not
+- Because there are no known courses containing the words "lunch" or "flex", we may be able to ignore any containing some aliases of those
+- At LMS, there is a period "4GR5" and "4GR6" due to them splitting the grade over lunch and flex (supposedly)
+- For courses assigned Q[1-4] (likely just PE), we might be able to determine the actual time of year taken by counting the number of quarters present (ie someone with Q1, Q2, Q3 and Q4 PE can have it marked as FY)
