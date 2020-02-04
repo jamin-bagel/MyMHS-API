@@ -19,6 +19,7 @@
     <deploy.url>http://localhost:8081/manager/text</deploy.url>
     <deploy.user>username</deploy.user>
     <deploy.password>password</deploy.password>
+    <deploy.port>8081</deploy.port>
   </properties>
 
   <dependencies>
@@ -84,6 +85,7 @@
           <url>${deploy.url}</url>
           <username>${deploy.user}</username>
           <password>${deploy.password}</password>
+          <port>${deploy.port}</port>
         </configuration>
       </plugin>
     </plugins>
