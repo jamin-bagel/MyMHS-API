@@ -14,6 +14,11 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
+
+    <deploy.path>/mymhs</deploy.path>
+    <deploy.url>http://localhost:8081/manager/text</deploy.url>
+    <deploy.user>username</deploy.user>
+    <deploy.password>password</deploy.password>
   </properties>
 
   <dependencies>
@@ -74,11 +79,11 @@
         <artifactId>tomcat7-maven-plugin</artifactId>
         <version>2.2</version>
         <configuration>
-          <url>http://localhost:8080/manager/text</url>
-          <path>/mymhs</path>
-          <username>war-deployer</username>
-          <password>maven-tomcat-plugin</password>
-          <port>8081</port>
+          <update>true</update>
+          <path>${deploy.path}</path>
+          <url>${deploy.url}</url>
+          <username>${deploy.user}</username>
+          <password>${deploy.password}</password>
         </configuration>
       </plugin>
     </plugins>
