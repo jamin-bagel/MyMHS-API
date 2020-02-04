@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.SneakyThrows;
+import me.jaminbagel.mymhs.Main;
 import me.jaminbagel.mymhs.exception.InvalidServerResponseException;
 import me.jaminbagel.mymhs.fetch.GenesisURL;
 import me.jaminbagel.mymhs.fetch.GenesisURL.Path;
@@ -20,18 +21,13 @@ import me.jaminbagel.mymhs.fetch.Response;
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public class GenesisUtil {
 
+  // For validating session IDs sent to our server as parameters
+  public static final Pattern SESSION_ID_PATTERN = Pattern.compile("^[A-Z0-9]{32}$");
+  // For validating student IDs sent to our server as parameters
+  public static final Pattern STUDENT_ID_PATTERN = Pattern.compile("^\\d{1,15}$");
   // Gets only the value of the session ID from a Set-Cookie header
   private static final Pattern SESSION_ID_COOKIE_PATTERN = Pattern
       .compile("JSESSIONID=([A-Z0-9]{32})($|;)");
-  // For getting the student's ID from URL a Genesis location header
-  private static final Pattern STUDENT_ID_PARAM_PATTERN = Pattern
-      .compile("[?&]studentid=([0-9]+)(&|$)");
-
-  // For validating session IDs sent to our server as parameters
-  private static final Pattern SESSION_ID_PATTERN = Pattern.compile("^[A-Z0-9]{32}$");
-  // For validating student IDs sent to our server as parameters
-  private static final Pattern STUDENT_ID_PATTERN = Pattern.compile("^\\d{1,15}$");
-
 
   /**
    * Generate a new session ID that can be used to interface with Genesis
@@ -61,7 +57,7 @@ public class GenesisUtil {
         }
       }
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      Main.logger.error("Bad URL", e);
     }
 
     throw new InvalidServerResponseException();
@@ -85,55 +81,20 @@ public class GenesisUtil {
       return false;
     }
 
-    try {
-      Response authResponse = new
-          Builder(GenesisURL.get(Path.AUTH))
-          .method(RequestMethod.POST)
-          .setHeader("Cookie", "JSESSIONID=" + sessionId)
-          .body(getURLEncodedAuthBody(user, password))
-          .construct()
-          .execute();
-
-      // If a set-cookie is returned as well, then the authentication failed
-      if (authResponse.getHeader("location") == null
-          || authResponse.getHeader("set-cookie") != null) {
-        throw new InvalidServerResponseException();
-      }
-      return authResponse.getHeader("location").contains("/genesis/parents?");
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-    }
-    return false;
-  }
-
-  /**
-   * Get the default student selected when logging into the session's account
-   *
-   * @param sessionId Session to get default student from
-   * @return The session's default student ID
-   * @throws IOException If the request fails
-   */
-  public static String getSessionStudentId(String sessionId) throws IOException {
-    // Verify that session ID is valid
-    if (validateSessionId(sessionId)) {
-      return null;
-    }
-
-    Response response = new
-        Builder(GenesisURL.get(Path.GENERIC_PAGE))
-        .method(RequestMethod.GET)
+    Response authResponse = new
+        Builder(GenesisURL.get(Path.AUTH))
+        .method(RequestMethod.POST)
         .setHeader("Cookie", "JSESSIONID=" + sessionId)
+        .body(getURLEncodedAuthBody(user, password))
         .construct()
         .execute();
 
-    String redirect = response.getHeader("location");
-    if (response.getCode() >= 300 && response.getCode() < 400 && redirect != null) {
-      Matcher studentIdMatcher = STUDENT_ID_PARAM_PATTERN.matcher(redirect);
-      if (studentIdMatcher.find()) {
-        return studentIdMatcher.group(1);
-      }
+    // If a set-cookie is returned as well, then the authentication failed
+    if (authResponse.getHeader("location") == null
+        || authResponse.getHeader("set-cookie") != null) {
+      throw new InvalidServerResponseException();
     }
-    return null;
+    return authResponse.getHeader("location").contains("/genesis/parents?");
   }
 
   /**
@@ -170,13 +131,4 @@ public class GenesisUtil {
     return sessionId != null && SESSION_ID_PATTERN.matcher(sessionId).find();
   }
 
-  /**
-   * Ensure that a student ID sent to this servlet (usually via URL parameter) is valid
-   *
-   * @param studentId Student ID to check
-   * @return Whether or not the student ID is properly formatted
-   */
-  public static boolean validateStudentId(String studentId) {
-    return studentId != null && STUDENT_ID_PATTERN.matcher(studentId).find();
-  }
 }

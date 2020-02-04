@@ -3,36 +3,35 @@ package me.jaminbagel.mymhs.api.endpoint.session;
 import static me.jaminbagel.mymhs.api.APIUtil.respond;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import me.jaminbagel.mymhs.Main;
+import me.jaminbagel.mymhs.api.APIUtil.HttpMethod;
 import me.jaminbagel.mymhs.api.APIUtil.ResponseType;
+import me.jaminbagel.mymhs.api.Endpoint;
 import me.jaminbagel.mymhs.api.GenesisUtil;
 import me.jaminbagel.mymhs.exception.InvalidServerResponseException;
+import org.json.JSONObject;
 
 /**
  * Created by Ben on 12/26/19 @ 11:37 PM
  */
-public class SessionID extends HttpServlet {
+public class SessionID extends Endpoint {
 
-  // TODO: 1/31/20 Extent endpoint
   @Override
-  protected void service(HttpServletRequest req, HttpServletResponse resp) {
-    if (req.getMethod().equals("POST")) {
-      this.doPost(req, resp);
-    } else {
-      respond(ResponseType.INVALID_METHOD, resp);
-    }
+  public HttpMethod getAllowedMethod() {
+    return HttpMethod.POST;
   }
 
   @Override
-  protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+  public void handlePost(HttpServletRequest req, HttpServletResponse resp, JSONObject body)
+      throws IOException {
     try {
       respond(ResponseType.SUCCESS, resp, GenesisUtil.getNewSessionId());
-    } catch (InvalidServerResponseException | IOException e) {
-      e.printStackTrace();
-      respond(ResponseType.ERROR, resp,
-          "Encountered error while fetching new session ID: " + e.getClass().getName());
+    } catch (InvalidServerResponseException e) {
+      // Genesis didn't send us a SID, or we couldn't parse it
+      Main.logger.error("Failed to generate SID", e);
+      respond(ResponseType.ERROR, resp, "Unable to generate SID");
     }
   }
 }

@@ -7,16 +7,13 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import me.jaminbagel.mymhs.Main;
 import org.perf4j.StopWatch;
 
 /**
  * Created by Ben on 12/27/19 @ 12:39 PM
  */
 public class Request {
-
-  private static final Logger logger = LogManager.getLogger("GLOBAL");
 
   private final URL url;
   private final RequestMethod method;
@@ -42,7 +39,7 @@ public class Request {
       headers.forEach(conn::setRequestProperty);
     }
 
-    logger.debug("Making HTTP request: " + this);
+    Main.logger.debug("Making HTTP request: " + this);
     StopWatch requestTimer = new StopWatch("httpRequest-" + this.url.getHost())
         .setMessage(this.url.getPath());
     requestTimer.start();
@@ -60,7 +57,7 @@ public class Request {
     BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
     reader.lines().forEach(responseBody::append);
 
-    logger.debug(requestTimer.stop());
+    Main.logger.debug(requestTimer.stop());
 
     conn.disconnect();
     return new Response(conn, responseBody.toString());

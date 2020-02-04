@@ -11,19 +11,19 @@
     <listener-class>me.jaminbagel.mymhs.Main</listener-class>
   </listener>
 
+  <!-- Generate SID -->
   <servlet>
     <servlet-class>me.jaminbagel.mymhs.api.endpoint.session.SessionID</servlet-class>
     <servlet-name>session-id</servlet-name>
   </servlet>
+
+  <!-- Authenticate Session -->
   <servlet>
     <servlet-class>me.jaminbagel.mymhs.api.endpoint.session.Authenticate</servlet-class>
     <servlet-name>session-auth</servlet-name>
   </servlet>
-  <servlet>
-    <servlet-class>me.jaminbagel.mymhs.api.endpoint.session.StudentID</servlet-class>
-    <servlet-name>session-student-id</servlet-name>
-  </servlet>
 
+  <!-- Student Summary Parser -->
   <servlet>
     <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.Summary</servlet-class>
     <servlet-name>student-summary</servlet-name>
@@ -37,10 +37,6 @@
   <servlet-mapping>
     <servlet-name>session-auth</servlet-name>
     <url-pattern>/api/v1/session/auth</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>session-student-id</servlet-name>
-    <url-pattern>/api/v1/session/student</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

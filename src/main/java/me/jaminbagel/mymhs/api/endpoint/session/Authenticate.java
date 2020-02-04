@@ -3,6 +3,8 @@ package me.jaminbagel.mymhs.api.endpoint.session;
 import static me.jaminbagel.mymhs.api.APIUtil.respond;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import me.jaminbagel.mymhs.api.APIUtil;
@@ -30,6 +32,13 @@ public class Authenticate extends Endpoint {
   }
 
   @Override
+  public ConcurrentHashMap<String, Pattern> getRequiredParameters() {
+    return new ConcurrentHashMap<String, Pattern>() {{
+      put(SESSION_ID_PARAM, GenesisUtil.SESSION_ID_PATTERN);
+    }};
+  }
+
+  @Override
   public void handlePost(HttpServletRequest req, HttpServletResponse resp, JSONObject body)
       throws IOException {
     try {
@@ -40,6 +49,7 @@ public class Authenticate extends Endpoint {
         APIUtil.respond(ResponseType.SUCCESS, resp, Message.LOGIN_SUCCESS);
         return;
       }
+      // Invalid username/password
       respond(ResponseType.ERROR, resp, Message.LOGIN_INVALID_CREDENTIALS);
     } catch (InvalidServerResponseException e) {
       // If server offers a new session ID cookie, the provided one is invalid

@@ -3,10 +3,14 @@ package me.jaminbagel.mymhs.api;
 import static me.jaminbagel.mymhs.api.APIUtil.respond;
 
 import java.io.IOException;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import me.jaminbagel.mymhs.Main;
 import me.jaminbagel.mymhs.api.APIUtil.HttpMethod;
 import me.jaminbagel.mymhs.api.APIUtil.ResponseType;
 import me.jaminbagel.mymhs.exception.LoggedOutException;
@@ -22,20 +26,19 @@ public abstract class Endpoint extends HttpServlet {
   Endpoint config
    */
 
+  public static final String STUDENT_ID_PARAM = "student";
+  public static final String SESSION_ID_PARAM = "sid";
+
   public HttpMethod getAllowedMethod() {
     return HttpMethod.GET;
   }
 
-  public boolean requiresSessionId() {
-    return false;
-  }
-
-  public boolean requiresStudentId() {
-    return false;
-  }
-
   public boolean requiresBody() {
     return false;
+  }
+
+  public ConcurrentHashMap<String, Pattern> getRequiredParameters() {
+    return null;
   }
 
   /*
@@ -60,18 +63,18 @@ public abstract class Endpoint extends HttpServlet {
   protected void service(HttpServletRequest req, HttpServletResponse resp) {
     if (req.getMethod().equals(getAllowedMethod().name())) {
       // If needed, validate session ID
-      if (requiresSessionId()) {
-        if (!GenesisUtil.validateSessionId(req.getParameter("sid"))) {
-          respond(ResponseType.BAD_INPUT, resp, "Invalid/missing session ID");
-          return;
-        }
-      }
-
-      // If needed, validate student ID
-      if (requiresStudentId()) {
-        if (!GenesisUtil.validateStudentId(req.getParameter("student"))) {
-          respond(ResponseType.BAD_INPUT, resp, "Invalid/missing student ID");
-          return;
+      ConcurrentHashMap<String, Pattern> requiredParams = getRequiredParameters();
+      if (requiredParams != null) {
+        for (Entry<String, Pattern> param : requiredParams.entrySet()) {
+          String providedValue = req.getParameter(param.getKey());
+          if (providedValue == null || providedValue.isEmpty()) {
+            respond(ResponseType.MISSING_PARAM, resp,
+                "Missing parameter, '" + param.getKey() + "'");
+            return;
+          } else if (!param.getValue().matcher(providedValue).find()) {
+            respond(ResponseType.INVALID_PARAM, resp,
+                "Invalid value for parameter, '" + param.getKey() + "'");
+          }
         }
       }
 
@@ -100,7 +103,7 @@ public abstract class Endpoint extends HttpServlet {
           handlePost(req, resp, null);
         }
       } catch (IOException e) {
-        e.printStackTrace();
+        Main.logger.error("IOException on body reader or handler method", e);
         respond(ResponseType.ERROR, resp);
       } catch (LoggedOutException e) {
         // In case Genesis returns a log-in page unexpectedly

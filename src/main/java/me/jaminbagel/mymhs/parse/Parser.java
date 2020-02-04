@@ -19,9 +19,10 @@ public abstract class Parser {
     }
   }
 
-  Document getDom() {
+  protected Document getDom() {
     return dom;
   }
 
+  @SuppressWarnings("unused")
   public abstract JSONObject parse();
 }

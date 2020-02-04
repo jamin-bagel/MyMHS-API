@@ -6,20 +6,17 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.Getter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import me.jaminbagel.mymhs.Main;
 
 /**
  * Created by Ben on 1/11/20 @ 12:34 PM
  */
 public class Response {
 
-  private static final Logger logger = LogManager.getLogger("GLOBAL");
-
   @Getter
-  int code;
+  private final int code;
   @Getter
-  String body;
+  private final String body;
   private ConcurrentHashMap<String, String> headers;
 
   Response(HttpURLConnection conn, String body) throws IOException {
@@ -37,7 +34,7 @@ public class Response {
         );
       }
     }
-    logger.debug("Received HTTP response: " + this);
+    Main.logger.debug("Received HTTP response: " + this);
   }
 
   public String getHeader(String header) {

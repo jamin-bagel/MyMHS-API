@@ -3,11 +3,13 @@ package me.jaminbagel.mymhs.api.endpoint.student;
 import static me.jaminbagel.mymhs.api.APIUtil.respond;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import me.jaminbagel.mymhs.api.APIUtil.HttpMethod;
 import me.jaminbagel.mymhs.api.APIUtil.ResponseType;
 import me.jaminbagel.mymhs.api.Endpoint;
+import me.jaminbagel.mymhs.api.GenesisUtil;
 import me.jaminbagel.mymhs.exception.LoggedOutException;
 import me.jaminbagel.mymhs.fetch.GenesisURL;
 import me.jaminbagel.mymhs.fetch.GenesisURL.Path;
@@ -22,18 +24,11 @@ import org.json.JSONObject;
 public class Summary extends Endpoint {
 
   @Override
-  public HttpMethod getAllowedMethod() {
-    return HttpMethod.GET;
-  }
-
-  @Override
-  public boolean requiresSessionId() {
-    return true;
-  }
-
-  @Override
-  public boolean requiresStudentId() {
-    return true;
+  public ConcurrentHashMap<String, Pattern> getRequiredParameters() {
+    return new ConcurrentHashMap<String, Pattern>() {{
+      put(STUDENT_ID_PARAM, GenesisUtil.STUDENT_ID_PATTERN);
+      put(SESSION_ID_PARAM, GenesisUtil.SESSION_ID_PATTERN);
+    }};
   }
 
   @Override
@@ -49,7 +44,7 @@ public class Summary extends Endpoint {
 
     JSONObject parsedPage = new SummaryParser(response.getBody()).parse();
     if (parsedPage == null) {
-      // Parser failed completely
+      // All parsing failed
       respond(ResponseType.ERROR, resp);
       return;
     }

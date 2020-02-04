@@ -18,10 +18,14 @@ public class GenesisURL {
 
   public enum Path {
     AUTH("sis/j_security_check"),
-    GENERIC_PAGE("parents?tab1=studentdata&tab2=gradebook&tab3=weeklysummary"),
 
-    STUDENT_SUMMARY("parents?tab1=studentdata&tab2=studentsummary&action=form&studentid=%s");
+    // Student ID
+    STUDENT_SUMMARY(
+        "parents?tab1=studentdata&tab2=studentsummary&action=form&studentid=%s&busview=week"),
 
+    // Student ID & Grading Section & Date
+    WEEKLY_SUMMARY(
+        "parents?tab1=studentdata&tab2=gradebook&tab3=weeklysummary&action=form&studentid=%s&mpToView=%s");
     private final String value;
 
     Path(String value) {

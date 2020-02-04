@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Main implements ServletContextListener {
 
-  final Logger logger = LogManager.getLogger("GLOBAL");
+  public static final Logger logger = LogManager.getLogger("GLOBAL");
 
   // Startup listener
   @Override

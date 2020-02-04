@@ -2,6 +2,7 @@ package me.jaminbagel.mymhs.api;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
+import me.jaminbagel.mymhs.Main;
 import org.json.JSONObject;
 
 /**
@@ -32,8 +33,7 @@ public class APIUtil {
       );
       resp.getWriter().close();
     } catch (IOException e) {
-      System.out.println("Failed to respond to request");
-      e.printStackTrace();
+      Main.logger.error("Failed to respond to request", e);
     }
   }
 
@@ -45,13 +45,16 @@ public class APIUtil {
   public enum ResponseType {
     // Generic
     SUCCESS(true, 200, "Request was successful"),
-    INVALID_METHOD(false, 405, "Method not allowed here"),
-    // --Commented out by Inspection (1/31/20, 12:23 PM):RATE_LIMIT(false, 429, "Rate limit exceeded. Slow down!"),
-    BAD_INPUT(false, 422, "Invalid input"),
     ERROR(false, 500, "An unknown error occurred"),
+    // TODO: 2/4/20 Add rate limiting w/ code 429
 
-    // More specific
+    // User input errors
     INVALID_SESSION(false, 403, "Invalid (or expired) session"),
+
+    MISSING_PARAM(false, 422, "Missing parameter"),
+    INVALID_PARAM(false, 422, "Invalid parameter"),
+
+    INVALID_METHOD(false, 405, "Method not allowed here"),
     INVALID_REQ_BODY(false, 422, "Invalid/missing request body");
 
     private final boolean successful;
