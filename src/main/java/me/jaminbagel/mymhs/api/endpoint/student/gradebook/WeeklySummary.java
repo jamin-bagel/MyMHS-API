@@ -1,4 +1,4 @@
-package me.jaminbagel.mymhs.api.endpoint.student;
+package me.jaminbagel.mymhs.api.endpoint.student.gradebook;
 
 import static me.jaminbagel.mymhs.api.APIUtil.respond;
 
@@ -15,17 +15,19 @@ import me.jaminbagel.mymhs.fetch.GenesisURL;
 import me.jaminbagel.mymhs.fetch.GenesisURL.Path;
 import me.jaminbagel.mymhs.fetch.Request.Builder;
 import me.jaminbagel.mymhs.fetch.Response;
-import me.jaminbagel.mymhs.parse.SummaryParser;
+import me.jaminbagel.mymhs.parse.gradebook.WeeklySummaryParser;
 import org.json.JSONObject;
 
 /**
- * Created by Ben on 1/14/20 @ 10:03 PM
+ * Created by Ben on 1/27/20 @ 8:36 AM
  */
-public class Summary extends Endpoint {
+public class WeeklySummary extends Endpoint {
 
   private static final ConcurrentHashMap<String, Pattern> requiredParams = new ConcurrentHashMap<String, Pattern>() {{
     put(STUDENT_ID_PARAM, GenesisUtil.STUDENT_ID_PATTERN);
     put(SESSION_ID_PARAM, GenesisUtil.SESSION_ID_PATTERN);
+    put("date", Pattern.compile("^\\d{2}/[0-3]?\\d/\\d{2,4}$"));
+    put("mp", Pattern.compile("^[A-Z0-9]{1,5}$"));
   }};
 
   @Override
@@ -39,12 +41,13 @@ public class Summary extends Endpoint {
     String sessionId = req.getParameter("sid");
     String studentId = req.getParameter("student");
     Response response = new
-        Builder(GenesisURL.get(Path.STUDENT_SUMMARY, studentId))
+        Builder(GenesisURL
+        .get(Path.WEEKLY_SUMMARY, studentId, req.getParameter("mp"), req.getParameter("date")))
         .setHeader("Cookie", "JSESSIONID=" + sessionId)
         .construct()
         .execute();
 
-    JSONObject parsedPage = new SummaryParser(response.getBody()).parse();
+    JSONObject parsedPage = new WeeklySummaryParser(response.getBody()).parse();
     if (parsedPage == null) {
       // All parsing failed
       respond(ResponseType.ERROR, resp);

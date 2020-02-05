@@ -16,20 +16,22 @@
     <servlet-class>me.jaminbagel.mymhs.api.endpoint.session.SessionID</servlet-class>
     <servlet-name>session-id</servlet-name>
   </servlet>
-
-  <!-- Authenticate Session -->
   <servlet>
     <servlet-class>me.jaminbagel.mymhs.api.endpoint.session.Authenticate</servlet-class>
     <servlet-name>session-auth</servlet-name>
   </servlet>
 
-  <!-- Student Summary Parser -->
+  <!-- Authenticate Session -->
   <servlet>
     <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.Summary</servlet-class>
     <servlet-name>student-summary</servlet-name>
   </servlet>
+  <servlet>
+    <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.gradebook.WeeklySummary</servlet-class>
+    <servlet-name>gradebook-weekly-summary</servlet-name>
+  </servlet>
 
-
+  <!-- Student Summary Parser -->
   <servlet-mapping>
     <servlet-name>session-id</servlet-name>
     <url-pattern>/api/v1/session</url-pattern>
@@ -39,8 +41,13 @@
     <url-pattern>/api/v1/session/auth</url-pattern>
   </servlet-mapping>
 
+  <!-- Weekly Gradebook Summary Parser -->
   <servlet-mapping>
     <servlet-name>student-summary</servlet-name>
     <url-pattern>/api/v1/student/summary</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>gradebook-weekly-summary</servlet-name>
+    <url-pattern>/api/v1/student/gradebook/summary</url-pattern>
   </servlet-mapping>
 </web-app>

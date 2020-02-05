@@ -21,7 +21,7 @@ import org.json.JSONObject;
  */
 public class Authenticate extends Endpoint {
 
-  private static ConcurrentHashMap<String, Pattern> requiredParams = new ConcurrentHashMap<String, Pattern>() {{
+  private static final ConcurrentHashMap<String, Pattern> requiredParams = new ConcurrentHashMap<String, Pattern>() {{
     put(SESSION_ID_PARAM, GenesisUtil.SESSION_ID_PATTERN);
   }};
 

@@ -31,37 +31,6 @@ public class SummaryParser extends Parser {
   }
 
   /**
-   * Parse the student selection dropdown
-   *
-   * @return A JSONObject containing available students with the current account as well as the
-   * current student in use
-   */
-  private JSONObject parseStudentSelector() {
-    try {
-      Element studentSelector = getDom().getElementById("fldStudent");
-      if (studentSelector != null) {
-        JSONObject studentSelectorData = new JSONObject();
-        studentSelectorData.put("options", new JSONArray());
-        // Loop through dropdown options
-        for (Element studentOption : getDom().getElementById("fldStudent").children()) {
-          studentSelectorData.getJSONArray("options").put(new JSONObject()
-              .put("id", studentOption.attr("value"))
-              .put("fullName", studentOption.text())
-          );
-          // Get current student
-          if (studentOption.hasAttr("selected")) {
-            studentSelectorData.put("selected", studentOption.attr("value"));
-          }
-        }
-        return studentSelectorData;
-      }
-    } catch (NullPointerException | IndexOutOfBoundsException e) {
-      // Do nothing (explained in doParse())
-    }
-    return null;
-  }
-
-  /**
    * Parse the student's info card on the left side of the student summary page
    *
    * @return A JSONObject containing raw key/value pairs from the card
