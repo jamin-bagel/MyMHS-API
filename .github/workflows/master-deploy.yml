@@ -1,6 +1,9 @@
-name: Tomcat7 Deploy
+name: Deploy master to Tomcat
 
 on:
+  push:
+    branches: 
+      - master
   pull_request:
     branches:
       - master
