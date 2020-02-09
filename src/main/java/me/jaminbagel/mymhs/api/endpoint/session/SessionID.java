@@ -9,8 +9,8 @@ import me.jaminbagel.mymhs.Main;
 import me.jaminbagel.mymhs.api.APIUtil.HttpMethod;
 import me.jaminbagel.mymhs.api.APIUtil.ResponseType;
 import me.jaminbagel.mymhs.api.Endpoint;
-import me.jaminbagel.mymhs.api.GenesisUtil;
 import me.jaminbagel.mymhs.exception.InvalidServerResponseException;
+import me.jaminbagel.mymhs.util.AuthUtil;
 import org.json.JSONObject;
 
 /**
@@ -27,7 +27,7 @@ public class SessionID extends Endpoint {
   public void handlePost(HttpServletRequest req, HttpServletResponse resp, JSONObject body)
       throws IOException {
     try {
-      respond(ResponseType.SUCCESS, resp, GenesisUtil.getNewSessionId());
+      respond(ResponseType.SUCCESS, resp, AuthUtil.getNewSessionId());
     } catch (InvalidServerResponseException e) {
       // Genesis didn't send us a SID, or we couldn't parse it
       Main.logger.error("Failed to generate SID", e);

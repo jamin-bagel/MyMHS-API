@@ -11,9 +11,9 @@ import me.jaminbagel.mymhs.api.APIUtil;
 import me.jaminbagel.mymhs.api.APIUtil.HttpMethod;
 import me.jaminbagel.mymhs.api.APIUtil.ResponseType;
 import me.jaminbagel.mymhs.api.Endpoint;
-import me.jaminbagel.mymhs.api.GenesisUtil;
 import me.jaminbagel.mymhs.api.Message;
 import me.jaminbagel.mymhs.exception.InvalidServerResponseException;
+import me.jaminbagel.mymhs.util.AuthUtil;
 import org.json.JSONObject;
 
 /**
@@ -22,7 +22,7 @@ import org.json.JSONObject;
 public class Authenticate extends Endpoint {
 
   private static final ConcurrentHashMap<String, Pattern> requiredParams = new ConcurrentHashMap<String, Pattern>() {{
-    put(SESSION_ID_PARAM, GenesisUtil.SESSION_ID_PATTERN);
+    put(SESSION_ID_PARAM, AuthUtil.SESSION_ID_PATTERN);
   }};
 
   @Override
@@ -44,7 +44,7 @@ public class Authenticate extends Endpoint {
   public void handlePost(HttpServletRequest req, HttpServletResponse resp, JSONObject body)
       throws IOException {
     try {
-      boolean successfulAuth = GenesisUtil
+      boolean successfulAuth = AuthUtil
           .authenticateSession(body.getString("u"), body.getString("p"),
               req.getParameter("sid"));
       if (successfulAuth) {

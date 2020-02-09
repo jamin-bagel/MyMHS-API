@@ -32,22 +32,32 @@
   </servlet>
 
   <!-- Student Summary Parser -->
+  <servlet>
+    <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.gradebook.AssignmentList</servlet-class>
+    <servlet-name>gradebook-assignment-list</servlet-name>
+  </servlet>
   <servlet-mapping>
     <servlet-name>session-id</servlet-name>
     <url-pattern>/api/v1/session</url-pattern>
   </servlet-mapping>
+
+  <!-- Weekly Gradebook Summary Parser -->
   <servlet-mapping>
     <servlet-name>session-auth</servlet-name>
     <url-pattern>/api/v1/session/auth</url-pattern>
   </servlet-mapping>
-
-  <!-- Weekly Gradebook Summary Parser -->
   <servlet-mapping>
     <servlet-name>student-summary</servlet-name>
     <url-pattern>/api/v1/student/summary</url-pattern>
   </servlet-mapping>
+
+  <!-- Assignment List Parser -->
   <servlet-mapping>
     <servlet-name>gradebook-weekly-summary</servlet-name>
     <url-pattern>/api/v1/student/gradebook/summary</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>gradebook-assignment-list</servlet-name>
+    <url-pattern>/api/v1/student/gradebook/assignments</url-pattern>
   </servlet-mapping>
 </web-app>

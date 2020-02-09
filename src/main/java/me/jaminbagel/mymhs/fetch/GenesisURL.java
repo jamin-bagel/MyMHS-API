@@ -10,12 +10,6 @@ public class GenesisURL {
 
   public static final String BASE = "https://parents.mtsd.k12.nj.us/genesis/";
 
-  @SneakyThrows
-  public static URL get(Path path, String... options) {
-    // noinspection RedundantCast (IntelliJ conflicting "redudant cast"" and "confusing arg to varargs" warnings)
-    return new URL(String.format(BASE + path.getValue(), (Object[]) options));
-  }
-
   public enum Path {
     AUTH("sis/j_security_check"),
 
@@ -25,11 +19,22 @@ public class GenesisURL {
 
     // Student ID & Grading Section & Date
     WEEKLY_SUMMARY(
-        "parents?tab1=studentdata&tab2=gradebook&tab3=weeklysummary&action=form&studentid=%s&mpToView=%s");
+        "parents?tab1=studentdata&tab2=gradebook&tab3=weeklysummary&action=form&studentid=%s&mpToView=%s"),
+
+    // Student ID
+    ALL_ASSIGNMENTS(
+        "parents?tab1=studentdata&tab2=gradebook&tab3=listassignments&action=form&studentid=%s&dateRange=allMP&courseAndSection=&status=");
+
     private final String value;
 
     Path(String value) {
       this.value = value;
+    }
+
+    @SneakyThrows
+    public URL format(String... options) {
+      //noinspection RedundantCast (IntelliJ conflicting "redudant cast"" and "confusing arg to varargs" warnings)
+      return new URL(String.format(BASE + getValue(), (Object[]) options));
     }
 
     private String getValue() {

@@ -1,4 +1,4 @@
-package me.jaminbagel.mymhs.api;
+package me.jaminbagel.mymhs.util;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import lombok.SneakyThrows;
 import me.jaminbagel.mymhs.Main;
 import me.jaminbagel.mymhs.exception.InvalidServerResponseException;
-import me.jaminbagel.mymhs.fetch.GenesisURL;
 import me.jaminbagel.mymhs.fetch.GenesisURL.Path;
 import me.jaminbagel.mymhs.fetch.Request.Builder;
 import me.jaminbagel.mymhs.fetch.RequestMethod;
@@ -19,7 +18,7 @@ import me.jaminbagel.mymhs.fetch.Response;
  * Created by Ben on 1/12/20 @ 9:42 PM
  */
 @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-public class GenesisUtil {
+public class AuthUtil {
 
   // For validating session IDs sent to our server as parameters
   public static final Pattern SESSION_ID_PATTERN = Pattern.compile("^[A-Z0-9]{32}$");
@@ -44,7 +43,7 @@ public class GenesisUtil {
   public static String getNewSessionId() throws InvalidServerResponseException, IOException {
     try {
       String responseCookie = new
-          Builder(GenesisURL.get(Path.AUTH))
+          Builder(Path.AUTH.format())
           .method(RequestMethod.GET)
           .construct()
           .execute()
@@ -82,7 +81,7 @@ public class GenesisUtil {
     }
 
     Response authResponse = new
-        Builder(GenesisURL.get(Path.AUTH))
+        Builder(Path.AUTH.format())
         .method(RequestMethod.POST)
         .setHeader("Cookie", "JSESSIONID=" + sessionId)
         .body(getURLEncodedAuthBody(user, password))
@@ -130,5 +129,4 @@ public class GenesisUtil {
   public static boolean validateSessionId(String sessionId) {
     return sessionId != null && SESSION_ID_PATTERN.matcher(sessionId).find();
   }
-
 }

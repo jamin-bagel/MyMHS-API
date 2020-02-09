@@ -26,28 +26,11 @@ public class WeeklySummaryParser extends Parser {
     JSONObject result = new JSONObject();
 
     result.put("availableStudents", parseStudentSelector());
-    result.put("selectedWeek", parseSelectedWeek());
+    result.put("weekOf", parseDateSelector());
     result.put("markingPeriod", parseMpSelector());
     result.put("courses", parseCourseTable());
 
     return result;
-  }
-
-  /**
-   * Parse the date field right above the course table
-   *
-   * @return The default value of the date field as a String
-   */
-  private String parseSelectedWeek() {
-    try {
-      Element dateField = getDom().getElementById("fldDate");
-      if (dateField != null) {
-        return dateField.attr("value");
-      }
-    } catch (NullPointerException | IndexOutOfBoundsException e) {
-      // Do nothing (explained in doParse())
-    }
-    return null;
   }
 
   /**
@@ -116,7 +99,7 @@ public class WeeklySummaryParser extends Parser {
               case 2:
                 // Average grade
                 String averageStr = cell.text().replace("%", "");
-                course.put("average", !averageStr.isEmpty() ? new Float(averageStr) : 0.0f);
+                course.put("average", !averageStr.isEmpty() ? Float.parseFloat(averageStr) : 0.0f);
 
                 // Course ID & section
                 Matcher onClickMatcher = COURSE_ID_PATTERN.matcher(cell.attr("onclick"));
@@ -132,7 +115,7 @@ public class WeeklySummaryParser extends Parser {
               case 5:
               case 6:
               case 7:
-                assignmentsPerDay.put(new Integer(cell.text()));
+                assignmentsPerDay.put(Integer.parseInt(cell.text()));
                 break;
             }
           }

@@ -15,7 +15,7 @@ public abstract class Parser {
   private final Document dom;
 
   public Parser(String html) throws LoggedOutException {
-    this.dom = Jsoup.parse(html.replaceAll("\\s{2,}", ""));
+    this.dom = Jsoup.parse(html.replaceAll("\\s{6,}", ""));
     if (dom.getElementsByClass("logonHeader").size() > 0) {
       throw new LoggedOutException();
     }
@@ -54,7 +54,24 @@ public abstract class Parser {
         return studentSelectorData;
       }
     } catch (NullPointerException | IndexOutOfBoundsException e) {
-      // Do nothing (explained in doParse())
+      // Do nothing
+    }
+    return null;
+  }
+
+  /**
+   * Parse the date field above the content of some pages
+   *
+   * @return The default value of the date field as a String
+   */
+  protected String parseDateSelector() {
+    try {
+      Element dateField = getDom().getElementById("fldDate");
+      if (dateField != null) {
+        return dateField.attr("value");
+      }
+    } catch (NullPointerException | IndexOutOfBoundsException e) {
+      // Do nothing
     }
     return null;
   }
