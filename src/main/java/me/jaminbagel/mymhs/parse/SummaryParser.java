@@ -1,5 +1,8 @@
 package me.jaminbagel.mymhs.parse;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import me.jaminbagel.mymhs.exception.LoggedOutException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,6 +12,10 @@ import org.jsoup.nodes.Element;
  * Created by Ben on 1/15/20 @ 12:15 PM
  */
 public class SummaryParser extends Parser {
+
+  // Matches the title attribute of bus schedule elements when the schedule is set to "WEEKLY"
+  private static Pattern BUS_SCHEDULE_ITEM_PATTERN = Pattern
+      .compile("^(\\d{1,2}:\\d{1,2}[A|P]M) - Route: ([^.]+)\\.\\s+ (.+)\\.\\s+$");
 
   public SummaryParser(String html) throws LoggedOutException {
     super(html);
@@ -159,26 +166,43 @@ public class SummaryParser extends Parser {
    * @return A JSONArray of the student's bus pickup/dropoff times for today (or the nearest
    * weekday)
    */
-  private JSONArray parseStudentBusSchedule() {
+  private JSONObject parseStudentBusSchedule() {
     try {
       Element studentBusSchedule = getDom().select("table.list").get(4);
       if (studentBusSchedule != null) {
-        JSONArray busScheduleArray = new JSONArray();
+        JSONObject busSchedules = new JSONObject();
         studentBusSchedule = studentBusSchedule.child(0);
-        for (Element scheduleItem : studentBusSchedule.children()) {
-          if (scheduleItem.hasClass("listroweven") || scheduleItem.hasClass("listrowodd")) {
-            busScheduleArray.put(new JSONObject()
-                .put("name", scheduleItem.child(0).text())
-                .put("route", scheduleItem.child(1).text().replaceAll(" ", ""))
-                .put("time", scheduleItem.child(2).text())
-                .put("location", scheduleItem.child(3).text())
-            );
+
+        // Loop through schedules (usually just AM/PM, but accepts others as a failsafe)
+        for (int i = 2; i < studentBusSchedule.childNodeSize(); i++) {
+          ArrayList<JSONObject> scheduleArray = new ArrayList<>();
+
+          // Loop through weekdays
+          for (int j = 1; j < studentBusSchedule.child(i).childNodeSize(); j++) {
+
+            String scheduleTitle = studentBusSchedule.child(i).child(j).attr("title");
+            Matcher scheduleItemMatcher = BUS_SCHEDULE_ITEM_PATTERN.matcher(scheduleTitle);
+
+            // Ensure that the cell's hover text (what we're parsing) is recognizable
+            if (scheduleItemMatcher.find()) {
+              scheduleArray.add(new JSONObject()
+                  .put("time", scheduleItemMatcher.group(1))
+                  .put("route", scheduleItemMatcher.group(2))
+                  .put("location", scheduleItemMatcher.group(3))
+              );
+            } else {
+              scheduleArray.add(new JSONObject());
+            }
           }
+
+          String scheduleName = studentBusSchedule.child(i).child(0).text();
+          busSchedules.put(scheduleName, scheduleArray);
         }
-        return busScheduleArray;
+        return busSchedules;
       }
     } catch (NullPointerException | IndexOutOfBoundsException e) {
-      // Do nothing (explained in doParse())
+      e.printStackTrace();
+      // Do nothing
     }
     return null;
   }
