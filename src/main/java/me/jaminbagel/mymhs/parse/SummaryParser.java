@@ -1,6 +1,5 @@
 package me.jaminbagel.mymhs.parse;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.jaminbagel.mymhs.exception.LoggedOutException;
@@ -175,7 +174,7 @@ public class SummaryParser extends Parser {
 
         // Loop through schedules (usually just AM/PM, but accepts others as a failsafe)
         for (int i = 2; i < studentBusSchedule.childNodeSize(); i++) {
-          ArrayList<JSONObject> scheduleArray = new ArrayList<>();
+          JSONArray scheduleArray = new JSONArray();
 
           // Loop through weekdays
           for (int j = 1; j < studentBusSchedule.child(i).childNodeSize(); j++) {
@@ -185,13 +184,13 @@ public class SummaryParser extends Parser {
 
             // Ensure that the cell's hover text (what we're parsing) is recognizable
             if (scheduleItemMatcher.find()) {
-              scheduleArray.add(new JSONObject()
+              scheduleArray.put(new JSONObject()
                   .put("time", scheduleItemMatcher.group(1))
                   .put("route", scheduleItemMatcher.group(2))
                   .put("location", scheduleItemMatcher.group(3))
               );
             } else {
-              scheduleArray.add(new JSONObject());
+              scheduleArray.put(new JSONObject());
             }
           }
 

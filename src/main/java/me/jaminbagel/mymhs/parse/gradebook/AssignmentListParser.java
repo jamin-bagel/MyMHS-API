@@ -1,12 +1,12 @@
 package me.jaminbagel.mymhs.parse.gradebook;
 
-import java.util.ArrayList;
 import me.jaminbagel.mymhs.exception.LoggedOutException;
 import me.jaminbagel.mymhs.parse.Parser;
 import me.jaminbagel.mymhs.util.GradeUtil;
 import me.jaminbagel.mymhs.util.GradeUtil.GradeStatus;
 import me.jaminbagel.mymhs.util.GradeUtil.WeekDay;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.nodes.Element;
 
@@ -33,10 +33,10 @@ public class AssignmentListParser extends Parser {
   }
 
   @Nullable
-  private ArrayList<JSONObject> parseCourseSelector() {
+  private JSONArray parseCourseSelector() {
     Element courseSelector = getDom().getElementById("fldCourse");
     if (courseSelector != null) {
-      ArrayList<JSONObject> result = new ArrayList<>();
+      JSONArray result = new JSONArray();
       for (Element option : courseSelector.children()) {
         // Ensure option isn't "All Coureses"
         if (!option.val().isEmpty()) {
@@ -47,7 +47,7 @@ public class AssignmentListParser extends Parser {
           course.put("id", Integer.parseInt(courseIdSplit[0]));
           course.put("section", Integer.parseInt(courseIdSplit[1]));
 
-          result.add(course);
+          result.put(course);
         }
       }
       return result;
@@ -55,11 +55,11 @@ public class AssignmentListParser extends Parser {
     return null;
   }
 
-  private ArrayList<JSONObject> parseAssignmentList() {
+  private JSONArray parseAssignmentList() {
     Element assignmentTable = getDom().selectFirst("table.list");
     if (assignmentTable != null) {
 
-      ArrayList<JSONObject> result = new ArrayList<>();
+      JSONArray result = new JSONArray();
       assignmentTable = assignmentTable.child(0);
 
       // Iterate through assignments
@@ -123,7 +123,7 @@ public class AssignmentListParser extends Parser {
               break;
           }
         }
-        result.add(assignment);
+        result.put(assignment);
       }
       return result;
     }
