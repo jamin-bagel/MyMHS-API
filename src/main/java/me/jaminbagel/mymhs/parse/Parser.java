@@ -43,12 +43,12 @@ public abstract class Parser {
         // Loop through dropdown options
         for (Element studentOption : getDom().getElementById("fldStudent").children()) {
           studentSelectorData.getJSONArray("options").put(new JSONObject()
-              .put("id", studentOption.attr("value"))
+              .put("id", Integer.parseInt(studentOption.attr("value")))
               .put("fullName", studentOption.text())
           );
           // Get current student
           if (studentOption.hasAttr("selected")) {
-            studentSelectorData.put("selected", studentOption.attr("value"));
+            studentSelectorData.put("current", Integer.parseInt(studentOption.attr("value")));
           }
         }
         return studentSelectorData;

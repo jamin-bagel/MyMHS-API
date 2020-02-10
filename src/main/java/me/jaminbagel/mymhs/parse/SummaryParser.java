@@ -61,7 +61,7 @@ public class SummaryParser extends Parser {
         return studentProperties;
       }
     } catch (NullPointerException | IndexOutOfBoundsException e) {
-      // Do nothing (explained in doParse())
+      // Do nothing
     }
     return null;
   }
@@ -90,16 +90,16 @@ public class SummaryParser extends Parser {
         );
 
         // School / ID / State ID
-        String[] idParts = studentHeader.child(1).wholeText().split("  \\|  ");
+        String[] headerTextSplit = studentHeader.child(1).wholeText().split("  \\|  ");
         studentImportantInfo
-            .put("school", idParts[0])
-            .put("id", idParts[1].split(": ")[1])
-            .put("stateId", idParts[2].split(": ")[1]);
+            .put("school", headerTextSplit[0])
+            .put("id", Integer.parseInt(headerTextSplit[1].split(": ")[1]))
+            .put("stateId", Long.parseLong(headerTextSplit[2].split(": ")[1]));
 
         return studentImportantInfo;
       }
     } catch (NullPointerException | IndexOutOfBoundsException e) {
-      // Do nothing (explained in doParse())
+      // Do nothing
     }
     return null;
   }
