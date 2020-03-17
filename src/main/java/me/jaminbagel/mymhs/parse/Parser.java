@@ -12,6 +12,8 @@ import org.jsoup.nodes.Element;
  */
 public abstract class Parser {
 
+  // TODO: 3/6/20 In subclasses, put response field names into constants, or better yet create response builders
+
   private final Document dom;
 
   public Parser(String html) throws LoggedOutException {
@@ -27,6 +29,16 @@ public abstract class Parser {
 
   @SuppressWarnings("unused")
   public abstract JSONObject parse();
+
+  /**
+   * Check if a DOM element is null (and is not a form/pseudo text element)
+   *
+   * @param element Element to check the state of
+   * @return Whether or not the element is null (and safe to continue using)
+   */
+  protected boolean elementDoesExist(Element element) {
+    return element != null && element.getClass().equals(Element.class);
+  }
 
   /**
    * Parse the student selection dropdown

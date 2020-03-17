@@ -14,21 +14,21 @@ public class APIUtil {
     respond(responseType, resp, responseType.defaultPayload);
   }
 
-  public static void respond(ResponseType responseType, HttpServletResponse resp, Object record) {
+  public static void respond(ResponseType responseType, HttpServletResponse resp, Object payload) {
     resp.setStatus(responseType.httpCode);
     resp.setContentType("application/json");
     resp.setCharacterEncoding("UTF8");
 
     // Auto-stringify enums
-    if (Enum.class.isAssignableFrom(record.getClass())) {
-      record = record.toString();
+    if (Enum.class.isAssignableFrom(payload.getClass())) {
+      payload = payload.toString();
     }
 
     try {
       resp.getWriter().print(
           new JSONObject()
               .put("success", responseType.successful)
-              .put("payload", record)
+              .put("payload", payload)
               .toString()
       );
       resp.getWriter().close();
@@ -45,7 +45,7 @@ public class APIUtil {
   public enum ResponseType {
     // Generic
     SUCCESS(true, 200, "Request was successful"),
-    ERROR(false, 500, "An unknown error occurred"),
+    ERROR(false, 500, "Internal error"),
     // TODO: 2/4/20 Add rate limiting w/ code 429
 
     // User input errors

@@ -69,8 +69,10 @@ public class WeeklySummaryParser extends Parser {
     try {
       Element courseTable = getDom().selectFirst("table.list");
       if (courseTable != null) {
-        JSONArray result = new JSONArray();
+
         courseTable = courseTable.child(0);
+        JSONArray courseArray = new JSONArray();
+
         for (Element row : courseTable.children()) {
           // Ignore non-content rows
           if (!row.hasClass("listrowodd") && !row.hasClass("listroweven")) {
@@ -98,8 +100,9 @@ public class WeeklySummaryParser extends Parser {
               // Grade average cell
               case 2:
                 // Average grade
-                String averageStr = cell.text().replace("%", "");
-                course.put("average", !averageStr.isEmpty() ? Float.parseFloat(averageStr) : 0.0f);
+                String averageStr = cell.text().replaceFirst("%.*", "");
+                course.put("average", !averageStr.isEmpty() ? Float.parseFloat(averageStr)
+                    : 0.0f); // TODO: 3/17/20 Check before parse (can say "No Grades")
 
                 // Course ID & section
                 Matcher onClickMatcher = COURSE_ID_PATTERN.matcher(cell.attr("onclick"));
@@ -120,9 +123,9 @@ public class WeeklySummaryParser extends Parser {
             }
           }
           course.put("assignmentsPerDay", assignmentsPerDay);
-          result.put(course);
+          courseArray.put(course);
         }
-        return result;
+        return courseArray;
       }
     } catch (NullPointerException | IndexOutOfBoundsException e) {
       // Do nothing (explained in doParse())

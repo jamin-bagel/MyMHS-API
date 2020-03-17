@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   version="4.0"
   xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+  metadata-complete="true"
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
                       http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
 
@@ -17,34 +19,35 @@
     <servlet-name>session-id</servlet-name>
   </servlet>
   <servlet>
-    <servlet-class>me.jaminbagel.mymhs.api.endpoint.session.Authenticate</servlet-class>
-    <servlet-name>session-auth</servlet-name>
+    <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.Summary</servlet-class>
+    <servlet-name>student-summary</servlet-name>
   </servlet>
 
   <!-- Authenticate Session -->
   <servlet>
-    <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.Summary</servlet-class>
-    <servlet-name>student-summary</servlet-name>
+    <servlet-class>me.jaminbagel.mymhs.api.endpoint.session.Authenticate</servlet-class>
+    <servlet-name>session-auth</servlet-name>
   </servlet>
-  <servlet>
-    <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.gradebook.WeeklySummary</servlet-class>
-    <servlet-name>gradebook-weekly-summary</servlet-name>
-  </servlet>
-
-  <!-- Student Summary Parser -->
   <servlet>
     <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.gradebook.AssignmentList</servlet-class>
     <servlet-name>gradebook-assignment-list</servlet-name>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>session-id</servlet-name>
-    <url-pattern>/api/v1/session</url-pattern>
-  </servlet-mapping>
+
+
+  <!-- Student Summary Parser -->
+  <servlet>
+    <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.gradebook.WeeklySummary</servlet-class>
+    <servlet-name>gradebook-weekly-summary</servlet-name>
+  </servlet>
+  <servlet>
+    <servlet-class>me.jaminbagel.mymhs.api.endpoint.student.gradebook.CourseSummary</servlet-class>
+    <servlet-name>gradebook-course-summary</servlet-name>
+  </servlet>
 
   <!-- Weekly Gradebook Summary Parser -->
   <servlet-mapping>
-    <servlet-name>session-auth</servlet-name>
-    <url-pattern>/api/v1/session/auth</url-pattern>
+    <servlet-name>session-id</servlet-name>
+    <url-pattern>/api/v1/session</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>student-summary</servlet-name>
@@ -53,11 +56,21 @@
 
   <!-- Assignment List Parser -->
   <servlet-mapping>
-    <servlet-name>gradebook-weekly-summary</servlet-name>
-    <url-pattern>/api/v1/student/gradebook/summary</url-pattern>
+    <servlet-name>session-auth</servlet-name>
+    <url-pattern>/api/v1/session/auth</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>gradebook-assignment-list</servlet-name>
     <url-pattern>/api/v1/student/gradebook/assignments</url-pattern>
+  </servlet-mapping>
+
+  <!-- Course Summary Parser -->
+  <servlet-mapping>
+    <servlet-name>gradebook-weekly-summary</servlet-name>
+    <url-pattern>/api/v1/student/gradebook/summary</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>gradebook-course-summary</servlet-name>
+    <url-pattern>/api/v1/student/gradebook/course</url-pattern>
   </servlet-mapping>
 </web-app>

@@ -94,4 +94,17 @@ public class GradeUtil {
       this.value = value;
     }
   }
+
+  public enum GradingMethod {
+    CATEGORY_WEIGHTING(0),
+    TOTAL_POINTS(1),
+    UNKNOWN(2);
+
+    @Getter
+    private final int value;
+
+    GradingMethod(int value) {
+      this.value = value;
+    }
+  }
 }

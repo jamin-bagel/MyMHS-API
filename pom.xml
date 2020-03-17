@@ -26,11 +26,6 @@
     <!-- Logging -->
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-api</artifactId>
-      <version>2.13.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>2.13.0</version>
     </dependency>
@@ -70,11 +65,12 @@
       <artifactId>jsoup</artifactId>
       <version>1.12.1</version>
     </dependency>
+
+    <!-- IntelliJ Annotations -->
     <dependency>
-      <artifactId>annotations</artifactId>
       <groupId>org.jetbrains</groupId>
-      <scope>compile</scope>
-      <version>RELEASE</version>
+      <artifactId>annotations</artifactId>
+      <version>19.0.0</version>
     </dependency>
   </dependencies>
 

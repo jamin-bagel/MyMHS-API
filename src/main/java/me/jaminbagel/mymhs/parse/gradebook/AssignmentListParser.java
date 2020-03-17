@@ -55,12 +55,13 @@ public class AssignmentListParser extends Parser {
     return null;
   }
 
+  // TODO: 3/17/20 Clean this one up a lot
   private JSONArray parseAssignmentList() {
     Element assignmentTable = getDom().selectFirst("table.list");
     if (assignmentTable != null) {
 
-      JSONArray result = new JSONArray();
       assignmentTable = assignmentTable.child(0);
+      JSONArray assignmentArray = new JSONArray();
 
       // Iterate through assignments
       for (int i = 0; i < assignmentTable.childNodeSize(); i++) {
@@ -123,9 +124,9 @@ public class AssignmentListParser extends Parser {
               break;
           }
         }
-        result.put(assignment);
+        assignmentArray.put(assignment);
       }
-      return result;
+      return assignmentArray;
     }
     return null;
   }

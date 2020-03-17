@@ -13,7 +13,7 @@ import org.jsoup.nodes.Element;
 public class SummaryParser extends Parser {
 
   // Matches the title attribute of bus schedule elements when the schedule is set to "WEEKLY"
-  private static Pattern BUS_SCHEDULE_ITEM_PATTERN = Pattern
+  private static final Pattern BUS_SCHEDULE_ITEM_PATTERN = Pattern
       .compile("^(\\d{1,2}:\\d{1,2}[A|P]M) - Route: ([^.]+)\\.\\s+ (.+)\\.\\s+$");
 
   public SummaryParser(String html) throws LoggedOutException {
@@ -44,9 +44,11 @@ public class SummaryParser extends Parser {
   private JSONObject parseStudentCard() {
     try {
       Element studentCard = getDom().selectFirst("table.list");
-      if (studentCard != null && studentCard.parent().hasAttr("valign")) {
-        JSONObject studentProperties = new JSONObject();
+      if (studentCard != null) {
+
         studentCard = studentCard.child(0);
+        JSONObject studentProperties = new JSONObject();
+
         for (Element item : studentCard.children()) {
           // Ensure key/value pair
           if (item.childNodeSize() == 2 || item.child(0).childNodeSize() == 2) {
@@ -74,8 +76,9 @@ public class SummaryParser extends Parser {
     try {
       Element studentHeader = getDom().select("table.list").get(1);
       if (studentHeader != null) {
-        JSONObject studentImportantInfo = new JSONObject();
+
         studentHeader = studentHeader.child(0);
+        JSONObject studentImportantInfo = new JSONObject();
 
         // Name / grade
         String firstName = studentHeader.child(0).child(0).child(0).text();
@@ -88,7 +91,7 @@ public class SummaryParser extends Parser {
             Integer.parseInt(studentHeader.child(0).child(1).children().last().text())
         );
 
-        // School / ID / State ID
+        // School / District ID / State ID
         String[] headerTextSplit = studentHeader.child(1).wholeText().split("  \\|  ");
         studentImportantInfo
             .put("school", headerTextSplit[0])
@@ -113,8 +116,9 @@ public class SummaryParser extends Parser {
     try {
       Element studentClassSchedule = getDom().select("table.list").get(2);
       if (studentClassSchedule != null) {
-        JSONArray scheduleArray = new JSONArray();
+
         studentClassSchedule = studentClassSchedule.child(0);
+        JSONArray scheduleItemArray = new JSONArray();
 
         // Loop through table rows & cells
         int i = 0;
@@ -123,34 +127,34 @@ public class SummaryParser extends Parser {
             continue;
           }
 
-          scheduleArray.put(new JSONObject());
+          scheduleItemArray.put(new JSONObject());
           int j = 0;
           for (Element cell : row.children()) {
             switch (j) {
               case 0:
-                scheduleArray.getJSONObject(i).put("period", cell.text());
+                scheduleItemArray.getJSONObject(i).put("period", cell.text());
                 break;
               case 1:
-                scheduleArray.getJSONObject(i).put("title", cell.text());
+                scheduleItemArray.getJSONObject(i).put("title", cell.text());
                 break;
               case 2:
-                scheduleArray.getJSONObject(i).put("when", cell.text());
+                scheduleItemArray.getJSONObject(i).put("when", cell.text());
                 break;
               case 3:
-                scheduleArray.getJSONObject(i).put("days", cell.text());
+                scheduleItemArray.getJSONObject(i).put("days", cell.text());
                 break;
               case 4:
-                scheduleArray.getJSONObject(i).put("room", cell.text());
+                scheduleItemArray.getJSONObject(i).put("room", cell.text());
                 break;
               case 5:
-                scheduleArray.getJSONObject(i).put("teacher", cell.text());
+                scheduleItemArray.getJSONObject(i).put("teacher", cell.text());
                 break;
             }
             j++;
           }
           i++;
         }
-        return scheduleArray;
+        return scheduleItemArray;
       }
     } catch (NullPointerException | IndexOutOfBoundsException e) {
       // Do nothing (explained in doParse())
@@ -169,10 +173,11 @@ public class SummaryParser extends Parser {
     try {
       Element studentBusSchedule = getDom().select("table.list").get(4);
       if (studentBusSchedule != null) {
-        JSONObject busSchedules = new JSONObject();
-        studentBusSchedule = studentBusSchedule.child(0);
 
-        // Loop through schedules (usually just AM/PM, but accepts others as a failsafe)
+        studentBusSchedule = studentBusSchedule.child(0);
+        JSONObject busSchedule = new JSONObject();
+
+        // Loop through schedules (usually just AM/PM, but accepts others as a fail-safe)
         for (int i = 2; i < studentBusSchedule.childNodeSize(); i++) {
           JSONArray scheduleArray = new JSONArray();
 
@@ -195,9 +200,9 @@ public class SummaryParser extends Parser {
           }
 
           String scheduleName = studentBusSchedule.child(i).child(0).text();
-          busSchedules.put(scheduleName, scheduleArray);
+          busSchedule.put(scheduleName, scheduleArray);
         }
-        return busSchedules;
+        return busSchedule;
       }
     } catch (NullPointerException | IndexOutOfBoundsException e) {
       e.printStackTrace();
